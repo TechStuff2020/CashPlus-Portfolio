@@ -4,7 +4,7 @@ According to several sources, year 2022 saw a record number of first-time invest
 
 ### Is DIY investing worth it? 
 
-Again, data has shown that most professional fund managers do worse than the index. Yet, pride, over confidence or plain beginner's luck, makes many people invest on their own. For this, just as you do a routine doctor's check-up for physical health, your portfolio too needs a regular **health check-up**.
+Again, data has shown that even most professional fund managers do worse than the index - let along new beginners. Yet, pride, over confidence or plain beginner's luck, makes many people invest on their own. For this, just as you do a routine doctor's check-up for physical health, your portfolio too needs a regular **health check-up**.
 
 ### My broker / bank sends me my portfolio performance reports anyway! Why this?
 
@@ -16,7 +16,7 @@ Again, data has shown that most professional fund managers do worse than the ind
 
 For above reasons (and more), this project is launched. 
 
-> Please note that this is not a portfolio tracker. There are far too many portals and applications that exist already. [GetQuin](getquin.com), [Sharesight](https://www.sharesight.com), [Seeking Alpha](https://seekingalpha.com), to name a few, and your own broker's web portal!  
+> Please note that this is not a classic portfolio tracker. There are far too many portals and applications existing already. [GetQuin](getquin.com), [Sharesight](https://www.sharesight.com), [Seeking Alpha](https://seekingalpha.com), to name a few, and your own broker's portal!  
 
 Pictorially, the difference between an "off the shelf" portfolio tracker and "Portfolio Doctor" is shown below. 
 
