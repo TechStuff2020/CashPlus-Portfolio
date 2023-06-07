@@ -1,4 +1,4 @@
-# portfolioDoctor
+# Portfolio Doctor
 
 According to several sources, year 2022 saw a record number of first-time investors! A good portion of Gen-Z is beginning to earn, have investible savings. Besides this data - which may be real or cooked up ![Image](https://user-images.githubusercontent.com/20066864/243864065-292f45a0-8d9f-4091-963b-ec8aee2791c9.png) - one can feel that discussions in many social circles are beginning to involve "stock tips" or innocent brags about gains from Apple/Netflix/Tesla, etc etc. Over time, one wonders:
 
