@@ -15,9 +15,9 @@ Again, data shows that even professional fund managers do worse than the index -
 
 For above reasons (and many more), this project is launched. 
 
-> Please note that this is not a classic portfolio tracker. There are far too many portals and applications existing already. [GetQuin](getquin.com), [Sharesight](https://www.sharesight.com), [Seeking Alpha](https://seekingalpha.com), to name a few, in addition to the broker's portal and reports!  
+> Please note that this is not a classic portfolio tracker. There are far too many portals and applications existing already. [GetQuin](getquin.com), [Sharesight](https://www.sharesight.com), [Seeking Alpha](https://seekingalpha.com), to name a few, in addition to your broker's reports!  
 
-Pictorially, the difference between an "off the shelf" portfolio tracker and **"Portfolio Doctor"** is shown below. 
+The difference between an "off the shelf" portfolio tracker and **"Portfolio Doctor"** is described below. 
 
 ![Image](https://user-images.githubusercontent.com/20066864/243858729-5bbe9e64-e845-442c-8245-cb283704abda.png)
 
