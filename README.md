@@ -4,13 +4,13 @@ According to several sources, year 2022 saw a record number of first-time invest
 
 ### Is DIY investing worth it? 
 
-Again, data has shown that even most professional fund managers do worse than the index - let along new beginners. Yet, pride, over confidence or plain beginner's luck, makes many people invest on their own. For this, just as you do a routine doctor's check-up for physical health, your portfolio too needs a regular **health check-up**.
+Again, data has shown that even most professional fund managers do worse than the index - let alone new beginners. Yet, pride, over confidence or plain beginner's luck, makes many people invest on their own. Therefore, just as you do a routine doctor's check-up for physical health, your portfolio too needs a regular **health check-up**.
 
 ### My broker / bank sends me my portfolio performance reports anyway! Why this?
 
 ... because
 
-1. The reports are wrong! Alright - this may be a hard pill to swallow, but TWR (time weighted return) is deemed to be the industry standard for portfolio performance. This method skips timing of investments, which is a crucial factor in performance. Duh!  ![Image](https://user-images.githubusercontent.com/20066864/243864329-9cc0cc55-bd70-4fc0-bd2d-0f714a5a063f.png)
+1. The reports are wrong! This may be a hard pill to swallow, but TWR (time weighted return) is deemed to be the industry standard for portfolio performance. This method skips timing of investments, which is a crucial factor in performance. Duh!  ![Image](https://user-images.githubusercontent.com/20066864/243864329-9cc0cc55-bd70-4fc0-bd2d-0f714a5a063f.png)
 2. Even if the report shows MWR (money weighted returns) or IRR, the evaluation is still logically wrong because - changes to cash as well as returns from Cash are not accounted for. And, most importantly, a real **comparative analysis against index** is missing from such reports. 
 3. Their incentives are against you. Brokers earn commissions with each trade. So, they will **NEVER** tell you to quit trading and invest in a boring, low fee index fund. 
 
