@@ -6,7 +6,7 @@ According to several sources, year 2022 saw a record number of first-time invest
 
 Again, data shows that even professional fund managers do worse than the index - let alone new beginners. Yet, pride, over confidence or plain beginner's luck, makes many people invest on their own. In financial jargon, a majority beginners - even with substantial investment amounts - opt for **self-service or advisory** mode, and prefer to make investment decisions themselves. Therefore, just like a routine doctor's check-up for bodily health, an investment portfolio too needs a periodic health check-up.
 
-### My broker / bank sends me all the portfolio performance reports anyway! Why this?
+### My broker / bank sends me all the reports anyway. Why this?
 
 ... because
 1. Their reports are wrong! This may be a hard pill to swallow, but TWR (time weighted return) is deemed to be the industry standard for portfolio performance. This method skips the timing of inflows and ouflows, which is a crucial factor in performance. Duh!  ![Image](https://user-images.githubusercontent.com/20066864/243864329-9cc0cc55-bd70-4fc0-bd2d-0f714a5a063f.png)
@@ -32,6 +32,13 @@ With benchmarking correctly done, the "Doctor" can now answer many questions and
 ![Image](https://user-images.githubusercontent.com/20066864/243866423-378681d8-fa5b-4a51-8afd-931c68faca28.png)
 
 ![image](https://github.com/picaYmica/Portfolio-Doctor/assets/20066864/4a9c993f-2d32-4691-a3bb-404d3311db0c)
+
+### What else does the doctor do?
+
+Besides performance vs a benchmark, the doctor will also assess the volatality of your portfolio against a reference index. It indicates how well is the portfolio diversified, by scanning your equity investment across sectors, regions and type of stocks you hold, e.g. momentum, growth, value.. 
+
+![image](https://github.com/picaYmica/Portfolio-Doctor/assets/20066864/443b1330-0e9d-4f12-9d07-37de30a25eaf)
+
 
 ### Great! Where is the technical ReadMe.txt or installation instructions?
 
