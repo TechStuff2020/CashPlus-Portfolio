@@ -176,7 +176,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
 
     private TreeMap<LocalDate, Map<String, String>> fetchWeeklyTimeSeries(String ticker, Map<String, TreeMap<LocalDate, Map<String, String>>> tickerList) {
-        String apiUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=" + ticker + "&apikey=9LS41X2NG4BDY2FF";
+        String apiUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=" + ticker + "&apikey=AETILB69JPD6DTUK";
         JsonNode jsonResponse = webClient.get()
                 .uri(apiUrl)
                 .retrieve()
@@ -205,7 +205,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     private TreeMap<LocalDate, Map<String, String>> fetchWeeklyFXexchangeRate(String toCurr, String fromCurr, Map<String, TreeMap<LocalDate, Map<String, String>>> currList) {
-        String apiUrl = "https://www.alphavantage.co/query?function=FX_WEEKLY&from_symbol=" + fromCurr + "&to_symbol=" + toCurr + "&apikey=9LS41X2NG4BDY2FF";
+        String apiUrl = "https://www.alphavantage.co/query?function=FX_WEEKLY&from_symbol=" + fromCurr + "&to_symbol=" + toCurr + "&apikey=AETILB69JPD6DTUK";
         JsonNode jsonResponse = webClient.get()
                 .uri(apiUrl)
                 .retrieve()

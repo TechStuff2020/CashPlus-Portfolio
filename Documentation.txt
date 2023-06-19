@@ -1,0 +1,435 @@
+By default, project runs in port 8080 and for now we have only one api there.
+api is called api/v1/portfolio.
+In order to call this api use postman or any provider that manipulates with apis;
+http://localhost:8081/api/v1/portfolio and it should be post request
+Your request Json looks like following:
+{    "currency": "USD",
+     "cashReturn": 3,
+    "tradeList": [
+                {
+                    "date": "2022-11-01",
+                    "quantity": 100,
+                    "price": 100,
+                    "action": 1,
+                    "ticker": "HDFCBANK.BSE",
+                    "fixedFee": 1,
+                    "variableFee": 2
+                }
+    ]
+
+}
+currency (required) - it is the currency of your portfolio
+cashReturn (optional,0 by default ) - annual cash return.
+tradeList (required) - list of trades
+date (required) ,
+quantity (required),
+action (required, 1/-1 ),
+ticker (required),
+price (optional, gets closed value if you don't send ),
+fixedFee (optional,0 by default ),
+variableFee (optional,0 by default )
+
+
+Following JSON is the response of that request
+{
+    "success": true,
+    "message": null,
+    "data": [
+        {
+            "value": 1824.9648999999997,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2022-11-04"
+        },
+        {
+            "value": 2000.7999000000002,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2022-11-11"
+        },
+        {
+            "value": 1974.9851999999996,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2022-11-18"
+        },
+        {
+            "value": 1977.8355999999999,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2022-11-25"
+        },
+        {
+            "value": 1973.5187999999998,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2022-12-02"
+        },
+        {
+            "value": 1977.1356,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2022-12-09"
+        },
+        {
+            "value": 1979.5496,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2022-12-16"
+        },
+        {
+            "value": 1928.3635500000003,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2022-12-23"
+        },
+        {
+            "value": 1965.7784,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2022-12-30"
+        },
+        {
+            "value": 1937.1352499999996,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-01-06"
+        },
+        {
+            "value": 1969.0455,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-01-13"
+        },
+        {
+            "value": 2049.4272,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-01-20"
+        },
+        {
+            "value": 1981.0321,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-01-27"
+        },
+        {
+            "value": 2012.0031000000001,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-02-03"
+        },
+        {
+            "value": 2005.9609500000001,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-02-10"
+        },
+        {
+            "value": 2000.8103999999998,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-02-17"
+        },
+        {
+            "value": 1917.2591500000003,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-02-24"
+        },
+        {
+            "value": 1977.4331999999997,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-03-03"
+        },
+        {
+            "value": 1938.1530000000002,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-03-10"
+        },
+        {
+            "value": 1904.3580499999998,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-03-17"
+        },
+        {
+            "value": 1895.9644999999998,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-03-24"
+        },
+        {
+            "value": 1959.06575,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-03-31"
+        },
+        {
+            "value": 2034.5523,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-04-07"
+        },
+        {
+            "value": 2069.2126,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-04-14"
+        },
+        {
+            "value": 2040.3621999999998,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-04-21"
+        },
+        {
+            "value": 2064.48515,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-04-28"
+        },
+        {
+            "value": 1987.8030499999998,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-05-05"
+        },
+        {
+            "value": 2027.8016,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-05-12"
+        },
+        {
+            "value": 1986.7644000000003,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-05-19"
+        },
+        {
+            "value": 1956.3705,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-05-26"
+        },
+        {
+            "value": 1948.2599500000003,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-06-02"
+        },
+        {
+            "value": 1951.9866,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-06-09"
+        },
+        {
+            "value": 1954.562,
+            "holdingList": [
+                {
+                    "ticker": "HDFCBANK.BSE",
+                    "quantity": 100
+                }
+            ],
+            "portfolioCash": 0.0,
+            "netInvestment": 10201.0,
+            "date": "2023-06-16"
+        }
+    ]
+}
