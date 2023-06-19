@@ -1,11 +1,9 @@
-package com.amey.ameyfintechproject.service;
+package com.portfolio.doctor.service;
 
-import com.amey.ameyfintechproject.payload.ApiResponse;
-import com.amey.ameyfintechproject.payload.TradeDto;
+import com.portfolio.doctor.payload.ApiResponse;
+import com.portfolio.doctor.payload.TradeDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.List;
 
 public interface PortfolioService {
 

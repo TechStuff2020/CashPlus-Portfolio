@@ -1,8 +1,8 @@
-package com.amey.ameyfintechproject.controller;
+package com.portfolio.doctor.controller;
 
-import com.amey.ameyfintechproject.payload.ApiResponse;
-import com.amey.ameyfintechproject.payload.TradeDto;
-import com.amey.ameyfintechproject.service.PortfolioService;
+import com.portfolio.doctor.payload.ApiResponse;
+import com.portfolio.doctor.payload.TradeDto;
+import com.portfolio.doctor.service.PortfolioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/portfolio")

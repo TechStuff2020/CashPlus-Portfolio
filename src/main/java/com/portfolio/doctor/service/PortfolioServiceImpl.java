@@ -1,6 +1,10 @@
-package com.amey.ameyfintechproject.service;
+package com.portfolio.doctor.service;
 
-import com.amey.ameyfintechproject.payload.*;
+import com.portfolio.doctor.payload.ApiResponse;
+import com.portfolio.doctor.payload.Holding;
+import com.portfolio.doctor.payload.PortfolioValueRes;
+import com.portfolio.doctor.payload.Trade;
+import com.portfolio.doctor.payload.TradeDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

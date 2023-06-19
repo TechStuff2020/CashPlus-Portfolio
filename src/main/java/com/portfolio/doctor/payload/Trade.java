@@ -1,4 +1,4 @@
-package com.amey.ameyfintechproject.payload;
+package com.portfolio.doctor.payload;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package com.amey.ameyfintechproject.payload;
+package com.portfolio.doctor.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
