@@ -1,32 +1,45 @@
 package com.portfolio.doctor.service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.portfolio.doctor.payload.ApiResponse;
 import com.portfolio.doctor.payload.Holding;
 import com.portfolio.doctor.payload.PortfolioValueRes;
 import com.portfolio.doctor.payload.Trade;
 import com.portfolio.doctor.payload.TradeDto;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.portfolio.doctor.props.ApplicationProperties;
+
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class PortfolioServiceImpl implements PortfolioService {
+
     private final WebClient webClient;
+    private final ApplicationProperties properties;
 
-    private Map<String, String> companyCurrencyMap = new HashMap<>();
+    private final Map<String, String> companyCurrencyMap = new HashMap<>();
 
-    public PortfolioServiceImpl() {
+    public PortfolioServiceImpl(ApplicationProperties properties) {
+        this.properties = properties;
         this.webClient = WebClient.create();
     }
 
@@ -49,7 +62,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         LocalDate tradeDate = tradesGroupedByTheirDate.firstEntry().getKey().plusDays(0);
         LocalDate currentDate = LocalDate.now();
 
-        while (tradeDate.compareTo(currentDate) <= 0) {
+        while (!tradeDate.isAfter(currentDate)) {
 
             handleTrades(tradesGroupedByTheirDate, cashNetHolder, tickerGroupTree, holdingMap, tradeDate, tradeDto, currExchangeRateMap);
 
@@ -74,12 +87,12 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     private void handleTrades(TreeMap<LocalDate, ArrayList<Trade>> tradesGroupedByTheirDate,
-                              CashNetHolder cashNetHolder,
-                              Map<String, TreeMap<LocalDate, Map<String, String>>> tickerGroupTree,
-                              Map<String, Holding> holdingMap,
-                              LocalDate tradeDate,
-                              TradeDto tradeDto,
-                              Map<String, TreeMap<LocalDate, Map<String, String>>> currExchangeRateMap) {
+            CashNetHolder cashNetHolder,
+            Map<String, TreeMap<LocalDate, Map<String, String>>> tickerGroupTree,
+            Map<String, Holding> holdingMap,
+            LocalDate tradeDate,
+            TradeDto tradeDto,
+            Map<String, TreeMap<LocalDate, Map<String, String>>> currExchangeRateMap) {
         ArrayList<Trade> trades = tradesGroupedByTheirDate.getOrDefault(tradeDate, new ArrayList<>());
         cashNetHolder.cash += (tradeDto.getCashReturn() * cashNetHolder.cash / 5200);
         for (Trade trade : trades) {
@@ -132,7 +145,8 @@ public class PortfolioServiceImpl implements PortfolioService {
         return portfolioValueRes;
     }
 
-    private void calculateValues(Map<String, TreeMap<LocalDate, Map<String, String>>> tickerList, LocalDate tradeDate, PortfolioValueRes portfolioValueRes1, Map<String, TreeMap<LocalDate, Map<String, String>>> currExchangeRateMap, TradeDto tradeDto) {
+    private void calculateValues(Map<String, TreeMap<LocalDate, Map<String, String>>> tickerList, LocalDate tradeDate, PortfolioValueRes portfolioValueRes1,
+            Map<String, TreeMap<LocalDate, Map<String, String>>> currExchangeRateMap, TradeDto tradeDto) {
         for (Holding holding : portfolioValueRes1.getHoldingList()) {
             TreeMap<LocalDate, Map<String, String>> tickData = getWeeklyTimeSeriesDataByTickerName(tickerList, holding.getTicker());
             var currencyData =
@@ -151,12 +165,14 @@ public class PortfolioServiceImpl implements PortfolioService {
         }
     }
 
-    private TreeMap<LocalDate, Map<String, String>> getWeeklyTimeSeriesDataByTickerName(Map<String, TreeMap<LocalDate, Map<String, String>>> tickerList, String ticker) {
+    private TreeMap<LocalDate, Map<String, String>> getWeeklyTimeSeriesDataByTickerName(Map<String, TreeMap<LocalDate, Map<String, String>>> tickerList,
+            String ticker) {
         return tickerList.containsKey(ticker) ? tickerList.get(ticker) :
                 fetchWeeklyTimeSeries(ticker, tickerList);
     }
 
-    private TreeMap<LocalDate, Map<String, String>> getWeeklySeriesFXDataByCurrencyCode(Map<String, TreeMap<LocalDate, Map<String, String>>> tickerList, String fromCurr, String toCurr) {
+    private TreeMap<LocalDate, Map<String, String>> getWeeklySeriesFXDataByCurrencyCode(Map<String, TreeMap<LocalDate, Map<String, String>>> tickerList,
+            String fromCurr, String toCurr) {
         return tickerList.containsKey(fromCurr + "-" + toCurr) ? tickerList.get(fromCurr + "-" + toCurr) :
                 fetchWeeklyFXexchangeRate(toCurr, fromCurr, tickerList);
     }
@@ -178,9 +194,8 @@ public class PortfolioServiceImpl implements PortfolioService {
         ));
     }
 
-
     private TreeMap<LocalDate, Map<String, String>> fetchWeeklyTimeSeries(String ticker, Map<String, TreeMap<LocalDate, Map<String, String>>> tickerList) {
-        String apiUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=" + ticker + "&apikey=AETILB69JPD6DTUK";
+        String apiUrl = getWeeklyTimeSeriesUrl(ticker);
         JsonNode jsonResponse = webClient.get()
                 .uri(apiUrl)
                 .retrieve()
@@ -196,7 +211,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     private String fetchCompanyReport(String sym) {
-        String apiUrl = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + sym + "&apikey=AETILB69JPD6DTUK";
+        String apiUrl = getCompanyReportUrl(sym);
         JsonNode jsonResponse = webClient.get()
                 .uri(apiUrl)
                 .retrieve()
@@ -208,8 +223,9 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     }
 
-    private TreeMap<LocalDate, Map<String, String>> fetchWeeklyFXexchangeRate(String toCurr, String fromCurr, Map<String, TreeMap<LocalDate, Map<String, String>>> currList) {
-        String apiUrl = "https://www.alphavantage.co/query?function=FX_WEEKLY&from_symbol=" + fromCurr + "&to_symbol=" + toCurr + "&apikey=AETILB69JPD6DTUK";
+    private TreeMap<LocalDate, Map<String, String>> fetchWeeklyFXexchangeRate(String toCurr, String fromCurr,
+            Map<String, TreeMap<LocalDate, Map<String, String>>> currList) {
+        String apiUrl = getWeeklyFXExchangeUrl(toCurr, fromCurr);
         JsonNode jsonResponse = webClient.get()
                 .uri(apiUrl)
                 .retrieve()
@@ -249,6 +265,7 @@ public class PortfolioServiceImpl implements PortfolioService {
             LocalDate date = LocalDate.parse(entry.getKey());
             JsonNode data = entry.getValue();
             Map<String, String> weeklyTimeSeriesConverted = objectMapper.convertValue(data, new TypeReference<>() {
+
             });
 
             weeklyTimeSeriesMap.put(date, weeklyTimeSeriesConverted);
@@ -256,9 +273,38 @@ public class PortfolioServiceImpl implements PortfolioService {
         return weeklyTimeSeriesMap;
     }
 
+    private String getCompanyReportUrl(String sym) {
+        return UriComponentsBuilder.fromUriString(properties.getTickerUrl())
+                .path("query")
+                .queryParam("function", "SYMBOL_SEARCH")
+                .queryParam("keywords", sym)
+                .queryParam("apikey", properties.getApiKey()).build()
+                .toUriString();
+    }
+
+    private String getWeeklyTimeSeriesUrl(String ticker) {
+        return UriComponentsBuilder.fromUriString(properties.getTickerUrl())
+                .path("query")
+                .queryParam("function", "TIME_SERIES_WEEKLY")
+                .queryParam("symbol", ticker)
+                .queryParam("apikey", properties.getApiKey()).build()
+                .toUriString();
+    }
+
+    private String getWeeklyFXExchangeUrl(String toCurr, String fromCurr) {
+        return UriComponentsBuilder.fromUriString(properties.getTickerUrl())
+                .path("query")
+                .queryParam("function", "FX_WEEKLY")
+                .queryParam("from_symbol", fromCurr)
+                .queryParam("to_symbol", toCurr)
+                .queryParam("apikey", properties.getApiKey()).build()
+                .toUriString();
+    }
+
     @Getter
     @Setter
     static class CashNetHolder {
+
         double cash = 0;
         double net = 0;
     }
