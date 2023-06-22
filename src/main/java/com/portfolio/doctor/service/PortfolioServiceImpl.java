@@ -1,15 +1,13 @@
 package com.portfolio.doctor.service;
 
-import com.portfolio.doctor.payload.ApiResponse;
-import com.portfolio.doctor.payload.Holding;
-import com.portfolio.doctor.payload.PortfolioValueRes;
-import com.portfolio.doctor.payload.Trade;
-import com.portfolio.doctor.payload.TradeDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.portfolio.doctor.payload.*;
+import com.portfolio.doctor.util.ApplicationProperties;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,49 +24,130 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     private Map<String, String> companyCurrencyMap = new HashMap<>();
 
-    public PortfolioServiceImpl() {
+    private final ApplicationProperties applicationProperties;
+    private double tax;
+
+    @Autowired
+    public PortfolioServiceImpl(ApplicationProperties applicationProperties) {
+        this.applicationProperties = applicationProperties;
         this.webClient = WebClient.create();
+
     }
 
     @Override
     public ResponseEntity<ApiResponse> processTrades(@RequestBody TradeDto tradeDto) {
         TreeMap<LocalDate, ArrayList<Trade>> tradesGroupedByTheirDate = groupTradesByTheirDate(tradeDto.getTradeList());
-        List<PortfolioValueRes> responseList = new ArrayList<>();
-        calculateResult(tradesGroupedByTheirDate, responseList, tradeDto);
-        return ResponseEntity.ok(new ApiResponse(true, responseList));
+
+        return ResponseEntity.ok(new ApiResponse(true, calculateResult(tradesGroupedByTheirDate, tradeDto)));
 
     }
 
-    private void calculateResult(TreeMap<LocalDate, ArrayList<Trade>> tradesGroupedByTheirDate, List<PortfolioValueRes> responseList, TradeDto tradeDto) {
+    private PortfolioRes calculateResult(TreeMap<LocalDate, ArrayList<Trade>> tradesGroupedByTheirDate, TradeDto tradeDto) {
+        PortfolioRes portfolioRes = new PortfolioRes();
         CashNetHolder cashNetHolder = new CashNetHolder();
         Map<String, TreeMap<LocalDate, Map<String, String>>> tickerGroupTree = new HashMap<>();
         Map<String, TreeMap<LocalDate, Map<String, String>>> currExchangeRateMap = new HashMap<>();
         Map<String, Holding> holdingMap = new HashMap<>();
 
+        _calculateResult(tradesGroupedByTheirDate, tradeDto, portfolioRes, cashNetHolder, tickerGroupTree, currExchangeRateMap, holdingMap);
+
+        cashNetHolder.setCash(portfolioRes.getResponseList().get(portfolioRes.getResponseList().size() - 1).getNetNewPurchase());
+        cashNetHolder.setNet(portfolioRes.getResponseList().get(0).getNetNewPurchase());
+        cashNetHolder.setFees(0);
+        cashNetHolder.setTaxes(0);
+        portfolioRes = new PortfolioRes();
+        holdingMap = new HashMap<>();
+        _calculateResult(tradesGroupedByTheirDate, tradeDto, portfolioRes, cashNetHolder, tickerGroupTree, currExchangeRateMap, holdingMap);
+        checkScaled(tradeDto.isScaleOutput(), portfolioRes);
+        return portfolioRes;
+    }
+
+    private void _calculateResult(TreeMap<LocalDate, ArrayList<Trade>> tradesGroupedByTheirDate, TradeDto tradeDto,
+                                  PortfolioRes portfolioRes, CashNetHolder cashNetHolder,
+                                  Map<String, TreeMap<LocalDate, Map<String, String>>> tickerGroupTree,
+                                  Map<String, TreeMap<LocalDate, Map<String, String>>> currExchangeRateMap,
+                                  Map<String, Holding> holdingMap) {
         //getting first trade date
         LocalDate tradeDate = tradesGroupedByTheirDate.firstEntry().getKey().plusDays(0);
         LocalDate currentDate = LocalDate.now();
-
+        List<Gain> gains = new ArrayList<>();
         while (tradeDate.compareTo(currentDate) <= 0) {
 
-            handleTrades(tradesGroupedByTheirDate, cashNetHolder, tickerGroupTree, holdingMap, tradeDate, tradeDto, currExchangeRateMap);
+            handleTrades(tradesGroupedByTheirDate, cashNetHolder, tickerGroupTree, holdingMap, tradeDate, tradeDto, currExchangeRateMap, gains);
 
             PortfolioValueRes portfolioValueRes = createPortfolio(cashNetHolder, holdingMap, tradeDate);
 
             calculateValues(tickerGroupTree, tradeDate, portfolioValueRes, currExchangeRateMap, tradeDto);
 
-            responseList.add(portfolioValueRes);
+            portfolioRes.getResponseList().add(portfolioValueRes);
+
+            cashNetHolder.cash += (tradeDto.getCashReturn() * cashNetHolder.cash / 5200);
+
+            portfolioValueRes.setGains(gains.stream().map(Gain::clone).toList());
 
             tradeDate = tradeDate.plusDays(7);
+        }
+        handleStandardDeviationAndInitialCash(portfolioRes);
+        portfolioRes.setFeesPaid(cashNetHolder.fees);
+        portfolioRes.setGainTaxValue(cashNetHolder.taxes);
+    }
+
+    private void handleStandardDeviationAndInitialCash(PortfolioRes portfolioRes) {
+        //create an empty array for standard  deviation logic
+        List<Double> standardDeviationList = new ArrayList<>();
+
+        double sum = getSumOfTotalValuesAndHandleInitialCash(portfolioRes, standardDeviationList);
+
+        // get the mean of array
+        int length = standardDeviationList.size();
+        double mean = sum / length;
+
+        // calculate the standard deviation
+        double standardDeviation = 0.0;
+        for (double num : standardDeviationList) {
+            standardDeviation += Math.pow(num - mean, 2);
+        }
+
+        portfolioRes.setStandardDeviation(Math.sqrt(standardDeviation / length));
+    }
+
+    private static double getSumOfTotalValuesAndHandleInitialCash(PortfolioRes portfolioRes, List<Double> standardDeviationList) {
+        double sum = 0.0;
+        for (PortfolioValueRes portfolioValueRes : portfolioRes.getResponseList()) {
+
+            double total = portfolioValueRes.getValue() + portfolioValueRes.getPortfolioCash();
+            standardDeviationList.add(total);
+            sum += total;
+
+
+        }
+        return sum;
+    }
+
+
+    private void checkScaled(boolean scaleOutput, PortfolioRes portfolioRes) {
+        if (scaleOutput) {
+            double scaleValue = 100 / portfolioRes.getResponseList().get(portfolioRes.getResponseList().size() - 1).getNetNewPurchase();
+            portfolioRes.makeScaled(scaleValue);
+            portfolioRes.setResponseList(portfolioRes.getResponseList().stream().peek(i -> {
+                i.makeScaled(scaleValue);
+                for (Gain gain : i.getGains()) {
+                    gain.makeScaled(scaleValue);
+                }
+                i.setHoldingList(i.getHoldingList().stream().map(j -> {
+                    j.makeScaled(scaleValue);
+                    return new HoldingScaled(j.getTicker(), j.getPositionValue());
+                }).collect(Collectors.toSet()));
+            }).toList());
         }
     }
 
     private PortfolioValueRes createPortfolio(CashNetHolder cashNetHolder, Map<String, Holding> holdingMap, LocalDate tradeDate) {
         PortfolioValueRes portfolioValueRes = createTestRes(tradeDate);
         portfolioValueRes.setHoldingList(new HashSet<>(holdingMap.values().stream()
-                .map(h -> new Holding(h.getTicker(), h.getQuantity()))
+                .map(h -> new Holding(h.getTicker(), h.getQuantity(), 0))
                 .collect(Collectors.toSet())));
-        portfolioValueRes.setNetInvestment(cashNetHolder.net);
+        portfolioValueRes.setNetNewPurchase(cashNetHolder.net);
         portfolioValueRes.setPortfolioCash(cashNetHolder.cash);
         return portfolioValueRes;
     }
@@ -79,38 +158,83 @@ public class PortfolioServiceImpl implements PortfolioService {
                               Map<String, Holding> holdingMap,
                               LocalDate tradeDate,
                               TradeDto tradeDto,
-                              Map<String, TreeMap<LocalDate, Map<String, String>>> currExchangeRateMap) {
+                              Map<String, TreeMap<LocalDate, Map<String, String>>> currExchangeRateMap,
+                              List<Gain> gains) {
         ArrayList<Trade> trades = tradesGroupedByTheirDate.getOrDefault(tradeDate, new ArrayList<>());
-        cashNetHolder.cash += (tradeDto.getCashReturn() * cashNetHolder.cash / 5200);
         for (Trade trade : trades) {
             checkCompanyCurrency(trade);
 
-            Holding holding = holdingMap.computeIfAbsent(trade.getTicker(), i -> new Holding(i, 0));
+            Holding holding = holdingMap.computeIfAbsent(trade.getTicker(), i -> new Holding(i, 0, 0));
             holding.setQuantity(holding.getQuantity() + (trade.getAction() * trade.getQuantity()));
 
-            var tickData =
-                    getWeeklyTimeSeriesDataByTickerName(
-                            tickerGroupTree, trade.getTicker()
-                    );
-            var currencyData =
-                    getWeeklySeriesFXDataByCurrencyCode(
-                            currExchangeRateMap,
-                            companyCurrencyMap.get(trade.getTicker()), tradeDto.getCurrency().getCurrencyCode()
-                    );
-            Map<String, String> tradeObjectOfTradeDate = findResultOrReturnClosestObject(tickData, tradeDate);
-            Map<String, String> currExchangeObj = findResultOrReturnClosestObject(currencyData, tradeDate);
-            double closePrice = Double.parseDouble(tradeObjectOfTradeDate.get("4. close")) * Double.parseDouble(currExchangeObj.get("4. close"));
+            double closePrice = getClosePrice(tickerGroupTree, tradeDate, tradeDto, currExchangeRateMap, trade.getTicker());
 
-            cashNetHolder.cash -= calculateTradeCost(trade, closePrice);
+            handleGains(cashNetHolder, tradeDto, gains, trade, closePrice);
+
+
+            cashNetHolder.cash -= calculateTradeCost(trade, closePrice, cashNetHolder);
             cashNetHolder.net += Math.max(-cashNetHolder.cash, 0);
             cashNetHolder.cash = Math.max(cashNetHolder.cash, 0);
 
         }
+        for (Gain gain : gains) {
+            double closePrice = getClosePrice(tickerGroupTree, tradeDate, tradeDto, currExchangeRateMap, gain.getTicker());
+            gain.setGains((closePrice - gain.getPrice()) * gain.getQuantity());
+        }
+
     }
 
+    private void handleGains(CashNetHolder cashNetHolder, TradeDto tradeDto, List<Gain> gains, Trade trade, double closePrice) {
+        if (trade.getAction() == 1) {
+            gains.add(new Gain(trade.getTicker(), trade.getQuantity(), gains.size() + 1, closePrice));
+        } else {
+            int quantity = trade.getQuantity();
+            for (Gain gain : gains) {
+                if (quantity == 0) break;
+                if (!gain.getTicker().equals(trade.getTicker()) || gain.getQuantity() <= 0) continue;
+                int gainInitQt = gain.getQuantity();
+                gain.setQuantity(Math.max(gain.getQuantity() - quantity, 0));
+                double gainValue = (closePrice - gain.getPrice()) * (gainInitQt - gain.getQuantity());
+                quantity -= gainInitQt;
+                handleGainTax(cashNetHolder, tradeDto, gain, gainValue);
+                gain.setBookedGains(gain.getBookedGains() + gainValue);
+            }
+        }
+    }
+
+    private void handleGainTax(CashNetHolder cashNetHolder, TradeDto tradeDto, Gain gain, double gainValue) {
+        if (gainValue > 0) {
+            tax = gainValue * tradeDto.getGainTax() / 100;
+            cashNetHolder.cash -= tax;
+            cashNetHolder.taxes+=tax;
+            gain.setTax(gain.getTax() + tax);
+        }
+    }
+
+    private double getClosePrice(Map<String, TreeMap<LocalDate, Map<String, String>>> tickerGroupTree, LocalDate tradeDate,
+                                 TradeDto tradeDto, Map<String, TreeMap<LocalDate, Map<String, String>>> currExchangeRateMap,
+                                 String ticker) {
+        var tickData =
+                getWeeklyTimeSeriesDataByTickerName(
+                        tickerGroupTree, ticker
+                );
+        var currencyData =
+                getWeeklySeriesFXDataByCurrencyCode(
+                        currExchangeRateMap,
+                        companyCurrencyMap.get(ticker), tradeDto.getCurrency().getCurrencyCode()
+                );
+        return getClosePrice(tradeDate, tickData, currencyData);
+    }
+
+    private static double getClosePrice(LocalDate tradeDate, TreeMap<LocalDate, Map<String, String>> tickData, TreeMap<LocalDate, Map<String, String>> currencyData) {
+        Map<String, String> tradeObjectOfTradeDate = findResultOrReturnClosestObject(tickData, tradeDate);
+        Map<String, String> currExchangeObj = findResultOrReturnClosestObject(currencyData, tradeDate);
+        return Double.parseDouble(tradeObjectOfTradeDate.get("4. close")) * Double.parseDouble(currExchangeObj.get("4. close"));
+    }
+
+
     private static Map<String, String> findResultOrReturnClosestObject(TreeMap<LocalDate, Map<String, String>> tickData, LocalDate tradeDate) {
-        Map<String, String> stringStringMap = !tickData.containsKey(tradeDate) ? tickData.floorEntry(tradeDate).getValue() : tickData.get(tradeDate);
-        return stringStringMap;
+        return !tickData.containsKey(tradeDate) ? tickData.floorEntry(tradeDate).getValue() : tickData.get(tradeDate);
     }
 
     private void checkCompanyCurrency(Trade trade) {
@@ -119,10 +243,11 @@ public class PortfolioServiceImpl implements PortfolioService {
         }
     }
 
-    private double calculateTradeCost(Trade trade, double closePrice) {
+    private double calculateTradeCost(Trade trade, double closePrice, CashNetHolder cashNetHolder) {
         closePrice = trade.getPrice() == null ? closePrice : trade.getPrice();
         double costWithoutFees = trade.getAction() * trade.getQuantity() * closePrice;
         double fees = trade.getFixedFee() + (trade.getQuantity() * closePrice * trade.getVariableFee() / 100);
+        cashNetHolder.fees += fees;
         return costWithoutFees + fees;
     }
 
@@ -132,8 +257,11 @@ public class PortfolioServiceImpl implements PortfolioService {
         return portfolioValueRes;
     }
 
-    private void calculateValues(Map<String, TreeMap<LocalDate, Map<String, String>>> tickerList, LocalDate tradeDate, PortfolioValueRes portfolioValueRes1, Map<String, TreeMap<LocalDate, Map<String, String>>> currExchangeRateMap, TradeDto tradeDto) {
-        for (Holding holding : portfolioValueRes1.getHoldingList()) {
+    private void calculateValues(Map<String, TreeMap<LocalDate, Map<String, String>>> tickerList, LocalDate tradeDate,
+                                 PortfolioValueRes portfolioValueRes1,
+                                 Map<String, TreeMap<LocalDate, Map<String, String>>> currExchangeRateMap, TradeDto tradeDto) {
+        for (HoldingScaled holding : portfolioValueRes1.getHoldingList()) {
+
             TreeMap<LocalDate, Map<String, String>> tickData = getWeeklyTimeSeriesDataByTickerName(tickerList, holding.getTicker());
             var currencyData =
                     getWeeklySeriesFXDataByCurrencyCode(
@@ -146,7 +274,8 @@ public class PortfolioServiceImpl implements PortfolioService {
 
             double v = (Double.parseDouble(tradeObjOfTradeDate.get("4. close")) *
                     Double.parseDouble(currExchangeObj.get("4. close")) *
-                    holding.getQuantity());
+                    ((Holding) holding).getQuantity());
+            holding.setPositionValue(v);
             portfolioValueRes1.setValue(portfolioValueRes1.getValue() + v);
         }
     }
@@ -180,7 +309,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
 
     private TreeMap<LocalDate, Map<String, String>> fetchWeeklyTimeSeries(String ticker, Map<String, TreeMap<LocalDate, Map<String, String>>> tickerList) {
-        String apiUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=" + ticker + "&apikey=AETILB69JPD6DTUK";
+        String apiUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=" + ticker + "&apikey=" + applicationProperties.getKey();
         JsonNode jsonResponse = webClient.get()
                 .uri(apiUrl)
                 .retrieve()
@@ -195,8 +324,8 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     }
 
-    private String fetchCompanyReport(String sym) {
-        String apiUrl = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + sym + "&apikey=AETILB69JPD6DTUK";
+    private void fetchCompanyReport(String sym) {
+        String apiUrl = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + sym + "&apikey=" + applicationProperties.getKey();
         JsonNode jsonResponse = webClient.get()
                 .uri(apiUrl)
                 .retrieve()
@@ -204,12 +333,12 @@ public class PortfolioServiceImpl implements PortfolioService {
                 .blockFirst();
 
         assert jsonResponse != null;
-        return getCurrencyAndPutIntoMap(sym, jsonResponse);
+        getCurrencyAndPutIntoMap(sym, jsonResponse);
 
     }
 
     private TreeMap<LocalDate, Map<String, String>> fetchWeeklyFXexchangeRate(String toCurr, String fromCurr, Map<String, TreeMap<LocalDate, Map<String, String>>> currList) {
-        String apiUrl = "https://www.alphavantage.co/query?function=FX_WEEKLY&from_symbol=" + fromCurr + "&to_symbol=" + toCurr + "&apikey=AETILB69JPD6DTUK";
+        String apiUrl = "https://www.alphavantage.co/query?function=FX_WEEKLY&from_symbol=" + fromCurr + "&to_symbol=" + toCurr + "&apikey=" + applicationProperties.getKey();
         JsonNode jsonResponse = webClient.get()
                 .uri(apiUrl)
                 .retrieve()
@@ -224,7 +353,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         return weeklySeriesFX;
     }
 
-    private String getCurrencyAndPutIntoMap(String sym, JsonNode jsonResponse) {
+    private void getCurrencyAndPutIntoMap(String sym, JsonNode jsonResponse) {
         JsonNode bestMatchesNode = jsonResponse.get("bestMatches");
 
         if (bestMatchesNode.isArray()) {
@@ -234,7 +363,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                 }
             }
         }
-        return companyCurrencyMap.get(sym);
+        companyCurrencyMap.get(sym);
     }
 
     private static TreeMap<LocalDate, Map<String, String>> convertWeeklyTimeSeriesJsonToTreeMapAndReturn(JsonNode jsonResponse, String targetKey) {
@@ -242,9 +371,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         TreeMap<LocalDate, Map<String, String>> weeklyTimeSeriesMap = new TreeMap<>();
         JsonNode weeklyTimeSeries = jsonResponse.get(targetKey);
         ObjectMapper objectMapper = new ObjectMapper();
-        if (weeklyTimeSeries == null) {
-            System.out.println(weeklyTimeSeries);
-        }
+        assert weeklyTimeSeries != null;
         weeklyTimeSeries.fields().forEachRemaining(entry -> {
             LocalDate date = LocalDate.parse(entry.getKey());
             JsonNode data = entry.getValue();
@@ -261,5 +388,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     static class CashNetHolder {
         double cash = 0;
         double net = 0;
+        double fees = 0;
+        double taxes = 0;
     }
 }

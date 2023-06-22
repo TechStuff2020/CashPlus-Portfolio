@@ -17,6 +17,14 @@ public class TradeDto {
     private List<Trade> tradeList;
 
     private Currency currency;
+
+    private boolean scaleOutput;
+
     @Min(value = 0, message = "return rate should be positive")
     private double cashReturn;
+
+    @Min(value = 0, message = "tax rate should be positive")
+    private double gainTax;
+
+
 }
