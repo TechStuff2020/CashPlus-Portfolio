@@ -11,6 +11,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "api")
 public class ApplicationProperties {
     private List<String> keys;
+    private String url;
     private Integer index = 0;
 
     public List<String> getKeys() {
