@@ -1,31 +1,38 @@
 package com.portfolio.doctor.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
 import com.portfolio.doctor.payload.*;
 import com.portfolio.doctor.util.ApplicationProperties;
-import lombok.Getter;
-import lombok.Setter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
+import lombok.Setter;
 @Service
 public class PortfolioServiceImpl implements PortfolioService {
     private final WebClient webClient;
 
-    private Map<String, String> companyCurrencyMap = new HashMap<>();
+    private final Map<String, String> companyCurrencyMap = new HashMap<>();
 
     private final ApplicationProperties applicationProperties;
-    private double tax;
 
     @Autowired
     public PortfolioServiceImpl(ApplicationProperties applicationProperties) {
@@ -71,7 +78,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         LocalDate tradeDate = tradesGroupedByTheirDate.firstEntry().getKey().plusDays(0);
         LocalDate currentDate = LocalDate.now();
         List<Gain> gains = new ArrayList<>();
-        while (tradeDate.compareTo(currentDate) <= 0) {
+        while (!tradeDate.isAfter(currentDate)) {
 
             handleTrades(tradesGroupedByTheirDate, cashNetHolder, tickerGroupTree, holdingMap, tradeDate, tradeDto, currExchangeRateMap, gains);
 
@@ -204,9 +211,9 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     private void handleGainTax(CashNetHolder cashNetHolder, TradeDto tradeDto, Gain gain, double gainValue) {
         if (gainValue > 0) {
-            tax = gainValue * tradeDto.getGainTax() / 100;
+            double tax = gainValue * tradeDto.getGainTax() / 100;
             cashNetHolder.cash -= tax;
-            cashNetHolder.taxes+=tax;
+            cashNetHolder.taxes+= tax;
             gain.setTax(gain.getTax() + tax);
         }
     }
@@ -309,7 +316,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
 
     private TreeMap<LocalDate, Map<String, String>> fetchWeeklyTimeSeries(String ticker, Map<String, TreeMap<LocalDate, Map<String, String>>> tickerList) {
-        String apiUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=" + ticker + "&apikey=" + applicationProperties.getKey();
+        String apiUrl = getWeeklyTimeSeriesUrl(ticker);
         JsonNode jsonResponse = webClient.get()
                 .uri(apiUrl)
                 .retrieve()
@@ -325,7 +332,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     private void fetchCompanyReport(String sym) {
-        String apiUrl = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + sym + "&apikey=" + applicationProperties.getKey();
+        String apiUrl = getCompanyReportUrl(sym);
         JsonNode jsonResponse = webClient.get()
                 .uri(apiUrl)
                 .retrieve()
@@ -338,7 +345,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     private TreeMap<LocalDate, Map<String, String>> fetchWeeklyFXexchangeRate(String toCurr, String fromCurr, Map<String, TreeMap<LocalDate, Map<String, String>>> currList) {
-        String apiUrl = "https://www.alphavantage.co/query?function=FX_WEEKLY&from_symbol=" + fromCurr + "&to_symbol=" + toCurr + "&apikey=" + applicationProperties.getKey();
+        String apiUrl = getWeeklyFXExchangeUrl(toCurr,fromCurr);
         JsonNode jsonResponse = webClient.get()
                 .uri(apiUrl)
                 .retrieve()
@@ -382,6 +389,36 @@ public class PortfolioServiceImpl implements PortfolioService {
         });
         return weeklyTimeSeriesMap;
     }
+
+
+    private String getCompanyReportUrl(String sym) {
+        return UriComponentsBuilder.fromUriString(applicationProperties.getTickerUrl())
+                .path("query")
+                .queryParam("function", "SYMBOL_SEARCH")
+                .queryParam("keywords", sym)
+                .queryParam("apikey", applicationProperties.getKey()).build()
+                .toUriString();
+    }
+
+    private String getWeeklyTimeSeriesUrl(String ticker) {
+        return UriComponentsBuilder.fromUriString(applicationProperties.getTickerUrl())
+                .path("query")
+                .queryParam("function", "TIME_SERIES_WEEKLY")
+                .queryParam("symbol", ticker)
+                .queryParam("apikey", applicationProperties.getKey()).build()
+                .toUriString();
+    }
+
+    private String getWeeklyFXExchangeUrl(String toCurr, String fromCurr) {
+        return UriComponentsBuilder.fromUriString(applicationProperties.getTickerUrl())
+                .path("query")
+                .queryParam("function", "FX_WEEKLY")
+                .queryParam("from_symbol", fromCurr)
+                .queryParam("to_symbol", toCurr)
+                .queryParam("apikey", applicationProperties.getKey()).build()
+                .toUriString();
+    }
+
 
     @Getter
     @Setter
