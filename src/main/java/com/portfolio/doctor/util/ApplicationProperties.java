@@ -27,7 +27,8 @@ public class ApplicationProperties {
     }
     public String getKey() {
         index = index >= keys.size() ? 0 : index;
-        return keys.get(index++);
+        String s = keys.get(index++);
+        return s;
     }
 
 
