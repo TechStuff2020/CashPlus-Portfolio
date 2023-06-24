@@ -1,19 +1,12 @@
 package com.portfolio.doctor.service;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.portfolio.doctor.payload.*;
 import com.portfolio.doctor.util.ApplicationProperties;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
-import lombok.Setter;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 public class PortfolioServiceImpl implements PortfolioService {
     private final WebClient webClient;
@@ -213,7 +206,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         if (gainValue > 0) {
             double tax = gainValue * tradeDto.getGainTax() / 100;
             cashNetHolder.cash -= tax;
-            cashNetHolder.taxes+= tax;
+            cashNetHolder.taxes += tax;
             gain.setTax(gain.getTax() + tax);
         }
     }
@@ -225,18 +218,21 @@ public class PortfolioServiceImpl implements PortfolioService {
                 getWeeklyTimeSeriesDataByTickerName(
                         tickerGroupTree, ticker
                 );
-        var currencyData =
+        boolean sameCurrency = companyCurrencyMap.get(ticker).equals(tradeDto.getCurrency().getCurrencyCode());
+        var currencyData = sameCurrency ? null :
                 getWeeklySeriesFXDataByCurrencyCode(
                         currExchangeRateMap,
                         companyCurrencyMap.get(ticker), tradeDto.getCurrency().getCurrencyCode()
                 );
-        return getClosePrice(tradeDate, tickData, currencyData);
+        return getClosePrice(tradeDate, tickData, currencyData, sameCurrency);
     }
 
-    private static double getClosePrice(LocalDate tradeDate, TreeMap<LocalDate, Map<String, String>> tickData, TreeMap<LocalDate, Map<String, String>> currencyData) {
-        Map<String, String> tradeObjectOfTradeDate = findResultOrReturnClosestObject(tickData, tradeDate);
-        Map<String, String> currExchangeObj = findResultOrReturnClosestObject(currencyData, tradeDate);
-        return Double.parseDouble(tradeObjectOfTradeDate.get("4. close")) * Double.parseDouble(currExchangeObj.get("4. close"));
+    private static double getClosePrice(
+            LocalDate tradeDate, TreeMap<LocalDate, Map<String, String>> tickData,
+            TreeMap<LocalDate, Map<String, String>> currencyData, boolean sameCurrency) {
+        String closedPriceOfTrade = findResultOrReturnClosestObject(tickData, tradeDate).get("4. close");
+        String exchangeRate = sameCurrency ? "1" : findResultOrReturnClosestObject(currencyData, tradeDate).get("4. close");
+        return Double.parseDouble(closedPriceOfTrade) * Double.parseDouble(exchangeRate);
     }
 
 
@@ -270,21 +266,30 @@ public class PortfolioServiceImpl implements PortfolioService {
         for (HoldingScaled holding : portfolioValueRes1.getHoldingList()) {
 
             TreeMap<LocalDate, Map<String, String>> tickData = getWeeklyTimeSeriesDataByTickerName(tickerList, holding.getTicker());
-            var currencyData =
-                    getWeeklySeriesFXDataByCurrencyCode(
-                            currExchangeRateMap,
-                            companyCurrencyMap.get(holding.getTicker()), tradeDto.getCurrency().getCurrencyCode()
-                    );
+
             Map<String, String> tradeObjOfTradeDate = findResultOrReturnClosestObject(tickData, tradeDate);
 
-            Map<String, String> currExchangeObj = findResultOrReturnClosestObject(currencyData, tradeDate);
+            String exchangeRate = companyCurrencyMap.get(holding.getTicker()).equals(tradeDto.getCurrency().getCurrencyCode()) ? "1" :
+                    getExchangeRate(tradeDate, currExchangeRateMap, tradeDto, holding);
 
             double v = (Double.parseDouble(tradeObjOfTradeDate.get("4. close")) *
-                    Double.parseDouble(currExchangeObj.get("4. close")) *
+                    Double.parseDouble(exchangeRate) *
                     ((Holding) holding).getQuantity());
             holding.setPositionValue(v);
             portfolioValueRes1.setValue(portfolioValueRes1.getValue() + v);
         }
+    }
+
+    private String getExchangeRate(LocalDate tradeDate, Map<String, TreeMap<LocalDate, Map<String, String>>> currExchangeRateMap, TradeDto tradeDto, HoldingScaled holding) {
+        var currencyData =
+                getWeeklySeriesFXDataByCurrencyCode(
+                        currExchangeRateMap,
+                        companyCurrencyMap.get(holding.getTicker()), tradeDto.getCurrency().getCurrencyCode()
+                );
+        Map<String, String> currExchangeObj = findResultOrReturnClosestObject(currencyData, tradeDate);
+
+        String exchangeRate = currExchangeObj.get("4. close");
+        return exchangeRate;
     }
 
     private TreeMap<LocalDate, Map<String, String>> getWeeklyTimeSeriesDataByTickerName(Map<String, TreeMap<LocalDate, Map<String, String>>> tickerList, String ticker) {
@@ -324,6 +329,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                 .blockFirst();
         assert jsonResponse != null;
         TreeMap<LocalDate, Map<String, String>> weeklyTimeSeries = convertWeeklyTimeSeriesJsonToTreeMapAndReturn(jsonResponse, "Weekly Time Series");
+        System.out.println(apiUrl);
 
         tickerList.put(ticker, weeklyTimeSeries);
 
@@ -338,6 +344,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                 .retrieve()
                 .bodyToFlux(JsonNode.class)
                 .blockFirst();
+        System.out.println(apiUrl);
 
         assert jsonResponse != null;
         getCurrencyAndPutIntoMap(sym, jsonResponse);
@@ -345,13 +352,13 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     private TreeMap<LocalDate, Map<String, String>> fetchWeeklyFXexchangeRate(String toCurr, String fromCurr, Map<String, TreeMap<LocalDate, Map<String, String>>> currList) {
-        String apiUrl = getWeeklyFXExchangeUrl(toCurr,fromCurr);
+        String apiUrl = getWeeklyFXExchangeUrl(toCurr, fromCurr);
         JsonNode jsonResponse = webClient.get()
                 .uri(apiUrl)
                 .retrieve()
                 .bodyToFlux(JsonNode.class)
                 .blockFirst();
-
+        System.out.println(apiUrl);
         assert jsonResponse != null;
         TreeMap<LocalDate, Map<String, String>> weeklySeriesFX = convertWeeklyTimeSeriesJsonToTreeMapAndReturn(jsonResponse, "Time Series FX (Weekly)");
 
@@ -378,7 +385,11 @@ public class PortfolioServiceImpl implements PortfolioService {
         TreeMap<LocalDate, Map<String, String>> weeklyTimeSeriesMap = new TreeMap<>();
         JsonNode weeklyTimeSeries = jsonResponse.get(targetKey);
         ObjectMapper objectMapper = new ObjectMapper();
+        if (weeklyTimeSeries == null) {
+            System.out.println(jsonResponse);
+        }
         assert weeklyTimeSeries != null;
+
         weeklyTimeSeries.fields().forEachRemaining(entry -> {
             LocalDate date = LocalDate.parse(entry.getKey());
             JsonNode data = entry.getValue();
