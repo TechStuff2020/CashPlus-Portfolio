@@ -22,6 +22,7 @@ public class Gain implements Cloneable {
         gains *= scaleValue;
         bookedGains *= scaleValue;
         tax *= scaleValue;
+        quantity=0;
     }
 
     public Gain(String ticker, int quantity, int seqNo, double price) {

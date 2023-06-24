@@ -127,7 +127,9 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     private void checkScaled(boolean scaleOutput, PortfolioRes portfolioRes) {
         if (scaleOutput) {
-            double scaleValue = 100 / portfolioRes.getResponseList().get(portfolioRes.getResponseList().size() - 1).getNetNewPurchase();
+            if(portfolioRes.getResponseList().size()==0)throw new RuntimeException("Portfolio has no data. Please check your input");
+            PortfolioValueRes portfolioValueRes = portfolioRes.getResponseList().get(0);
+            double scaleValue = 100 / (portfolioValueRes.getNetNewPurchase() + portfolioValueRes.getPortfolioCash());
             portfolioRes.makeScaled(scaleValue);
             portfolioRes.setResponseList(portfolioRes.getResponseList().stream().peek(i -> {
                 i.makeScaled(scaleValue);

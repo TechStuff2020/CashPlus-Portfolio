@@ -16,7 +16,6 @@ public class PortfolioRes {
 
     public void makeScaled(double scaleValue) {
         feesPaid *= scaleValue;
-        standardDeviation *=scaleValue;
         gainTaxValue *=scaleValue;
     }
 
