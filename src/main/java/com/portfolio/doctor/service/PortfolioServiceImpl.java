@@ -18,6 +18,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class PortfolioServiceImpl implements PortfolioService {
@@ -146,9 +147,9 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     private PortfolioValueRes createPortfolio(CashNetHolder cashNetHolder, Map<String, Holding> holdingMap, LocalDate tradeDate) {
         PortfolioValueRes portfolioValueRes = createTestRes(tradeDate);
-        portfolioValueRes.setHoldingList(new HashSet<>(holdingMap.values().stream()
-                .map(h -> new Holding(h.getTicker(), h.getQuantity(), 0))
-                .collect(Collectors.toSet())));
+        List<Holding> holdingStream = holdingMap.values().stream()
+                .map(h -> new Holding(h.getTicker(), h.getQuantity(), 0)).toList();
+        portfolioValueRes.setHoldingList(new HashSet<>(holdingStream));
         portfolioValueRes.setNetNewPurchase(cashNetHolder.net);
         portfolioValueRes.setPortfolioCash(cashNetHolder.cash);
         return portfolioValueRes;
