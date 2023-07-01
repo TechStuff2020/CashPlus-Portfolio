@@ -44,4 +44,18 @@ Besides performance vs a benchmark, the doctor can also assess the volatality of
 
 ### Great! Where is the technical ReadMe.txt or installation instructions?
 
-Please refer /src directory. This ReadMe is meant to be a one-pager overview of the project.
+Please refer /src directory. This ReadMe is meant to be a one-pager overview of the project. The project is a web-app without any need for a database. User's trade data is stored in user's browser, so that data privacy concerns do not arise. Only the stock ticker symbols are sent to [Alpha-Vantage](https://www.alphavantage.co/#about) to get the market prices. All calculations happen local device's memory.
+
+Setting up a portfolo is quite intuitive, as shown below: 
+
+![image](https://github.com/TechStuff2020/Portfolio-Doctor/assets/20066864/2da5dc15-5f68-4c6d-a6b9-fb856d2ed551)
+
+Supported benchmark indices:
+
+![image](https://github.com/TechStuff2020/Portfolio-Doctor/assets/20066864/70482d6a-cb58-4d72-9ad2-4782b3c7d28f)
+
+Supported currencies:
+
+![image](https://github.com/TechStuff2020/Portfolio-Doctor/assets/20066864/6ee5e464-9ba8-4e9b-a437-2114a48e3fc3)
+
+
