@@ -6,9 +6,9 @@ import java.util.Objects;
 
 @Data
 public class Holding extends HoldingScaled{
-    private int quantity;
+    private double quantity;
 
-    public Holding(String ticker,int quantity, double value) {
+    public Holding(String ticker,double quantity, double value) {
         super(ticker, value);
         this.quantity=quantity;
     }

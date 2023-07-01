@@ -8,7 +8,7 @@ import lombok.Data;
 public class Gain implements Cloneable {
 
     private String ticker;
-    private int quantity;
+    private double quantity;
     private double gains;
     private double tax;
     private int seqNo;
@@ -25,7 +25,7 @@ public class Gain implements Cloneable {
         quantity=0;
     }
 
-    public Gain(String ticker, int quantity, int seqNo, double price) {
+    public Gain(String ticker, double quantity, int seqNo, double price) {
         this.ticker = ticker;
         this.quantity = quantity;
         this.seqNo = seqNo;

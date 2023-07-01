@@ -13,7 +13,7 @@ public class Trade {
     //1 means buy and -1 means sell
     private byte action;
 
-    private int quantity;
+    private double quantity;
 
     @NotBlank
     private String ticker;

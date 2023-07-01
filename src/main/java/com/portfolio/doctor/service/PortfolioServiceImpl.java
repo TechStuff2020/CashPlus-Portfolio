@@ -191,11 +191,11 @@ public class PortfolioServiceImpl implements PortfolioService {
         if (trade.getAction() == 1) {
             gains.add(new Gain(trade.getTicker(), trade.getQuantity(), gains.size() + 1, closePrice));
         } else {
-            int quantity = trade.getQuantity();
+            double quantity = trade.getQuantity();
             for (Gain gain : gains) {
                 if (quantity == 0) break;
                 if (!gain.getTicker().equals(trade.getTicker()) || gain.getQuantity() <= 0) continue;
-                int gainInitQt = gain.getQuantity();
+                double gainInitQt = gain.getQuantity();
                 gain.setQuantity(Math.max(gain.getQuantity() - quantity, 0));
                 double gainValue = (closePrice - gain.getPrice()) * (gainInitQt - gain.getQuantity());
                 quantity -= gainInitQt;
