@@ -50,12 +50,8 @@ Setting up a portfolo is quite intuitive, as shown below:
 
 ![image](https://github.com/TechStuff2020/Portfolio-Doctor/assets/20066864/2da5dc15-5f68-4c6d-a6b9-fb856d2ed551)
 
-Supported benchmark indices:
+Supported benchmark indices and currencies:
 
-![image](https://github.com/TechStuff2020/Portfolio-Doctor/assets/20066864/70482d6a-cb58-4d72-9ad2-4782b3c7d28f)
-
-Supported currencies:
-
-![image](https://github.com/TechStuff2020/Portfolio-Doctor/assets/20066864/6ee5e464-9ba8-4e9b-a437-2114a48e3fc3)
+![image](https://github.com/TechStuff2020/Portfolio-Doctor/assets/20066864/70482d6a-cb58-4d72-9ad2-4782b3c7d28f) ![image](https://github.com/TechStuff2020/Portfolio-Doctor/assets/20066864/6ee5e464-9ba8-4e9b-a437-2114a48e3fc3)
 
 
