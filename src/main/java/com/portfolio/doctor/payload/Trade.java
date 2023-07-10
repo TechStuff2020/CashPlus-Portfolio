@@ -9,7 +9,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class Trade {
+public class Trade implements Cloneable {
     //1 means buy and -1 means sell
     private byte action;
 
@@ -31,4 +31,13 @@ public class Trade {
     @Min(value = 0,message = "price must be positive")
     private Double price;
 
+    @Override
+    public Trade clone() {
+        try {
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return (Trade) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

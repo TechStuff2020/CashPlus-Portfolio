@@ -18,6 +18,7 @@ public class PortfolioValueRes {
     private Set<HoldingScaled> holdingList = new HashSet<>();
     private List<Gain> gains = new ArrayList<>();
     private Double portfolioCash;
+    private Double benchmarkPrice;
     private Double netNewPurchase;
     private LocalDate date;
 
