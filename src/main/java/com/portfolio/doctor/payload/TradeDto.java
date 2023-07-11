@@ -20,7 +20,7 @@ public class TradeDto {
 
     private boolean scaleOutput;
 
-    private String symbol;
+    private String benchmarkSymbol;
 
     @Min(value = 0, message = "return rate should be positive")
     private double cashReturn;

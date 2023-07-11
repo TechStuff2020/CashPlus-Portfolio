@@ -3,20 +3,30 @@ api is called api/v1/portfolio.
 In order to call this api use postman or any provider that manipulates with apis;
 http://localhost:8081/api/v1/portfolio and it should be post request
 Your request Json looks like following:
-{    "currency": "USD",
-     "cashReturn": 3,
+{
+    "currency": "USD",
+    "cashReturn": 0,
+    "scaleOutput": false,
+    "gainTax": 50,
+    "benchmarkSymbol": "VOO",
     "tradeList": [
-                {
-                    "date": "2022-11-01",
-                    "quantity": 100,
-                    "price": 100,
-                    "action": 1,
-                    "ticker": "HDFCBANK.BSE",
-                    "fixedFee": 1,
-                    "variableFee": 2
-                }
+        {
+            "date": "2023-01-01",
+            "quantity": 10,
+            "action": 1,
+            "ticker": "AAPL",
+            "fixedFee": 0,
+            "variableFee": 20
+        },
+        {
+            "date": "2023-06-01",
+            "quantity": 10,
+            "action": -1,
+            "ticker": "AAPL",
+            "fixedFee": 0,
+            "variableFee": 20
+        }
     ]
-
 }
 currency (required) - it is the currency of your portfolio
 cashReturn (optional,0 by default ) - annual cash return.
@@ -31,405 +41,1416 @@ variableFee (optional,0 by default )
 
 
 Following JSON is the response of that request
+
 {
     "success": true,
     "message": null,
-    "data": [
-        {
-            "value": 1824.9648999999997,
-            "holdingList": [
+    "data": {
+        "actual": {
+            "responseList": [
                 {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
+                    "value": 1299.3000000000002,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1299.3000000000002,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 0.0,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 351.34,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2022-12-30"
+                },
+                {
+                    "value": 1296.2,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1296.2,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": -3.1000000000000227,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 356.59,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-01-06"
+                },
+                {
+                    "value": 1347.6,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1347.6,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 48.29999999999984,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 366.23,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-01-13"
+                },
+                {
+                    "value": 1378.7,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1378.7,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 79.39999999999998,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 363.71,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-01-20"
+                },
+                {
+                    "value": 1459.3000000000002,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1459.3000000000002,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 160.0,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 372.87,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-01-27"
+                },
+                {
+                    "value": 1545.0,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1545.0,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 245.69999999999993,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 378.85,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-02-03"
+                },
+                {
+                    "value": 1510.1,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1510.1,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 210.79999999999984,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 375.02,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-02-10"
+                },
+                {
+                    "value": 1525.5,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1525.5,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 226.20000000000005,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 374.22,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-02-17"
+                },
+                {
+                    "value": 1467.1000000000001,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1467.1000000000001,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 167.8,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 364.23,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-02-24"
+                },
+                {
+                    "value": 1510.3,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1510.3,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 210.99999999999994,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 371.28,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-03-03"
+                },
+                {
+                    "value": 1485.0,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1485.0,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 185.69999999999993,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 354.68,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-03-10"
+                },
+                {
+                    "value": 1550.0,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1550.0,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 250.69999999999993,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 359.88,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-03-17"
+                },
+                {
+                    "value": 1602.5,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1602.5,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 303.19999999999993,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 363.56,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-03-24"
+                },
+                {
+                    "value": 1649.0,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1649.0,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 349.7,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 376.07,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-03-31"
+                },
+                {
+                    "value": 1646.6,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1646.6,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 347.2999999999999,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 375.95,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-04-07"
+                },
+                {
+                    "value": 1652.1000000000001,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1652.1000000000001,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 352.8,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 378.99,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-04-14"
+                },
+                {
+                    "value": 1650.2,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1650.2,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 350.90000000000003,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 378.59,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-04-21"
+                },
+                {
+                    "value": 1696.8000000000002,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1696.8000000000002,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 397.5,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 382.05,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-04-28"
+                },
+                {
+                    "value": 1735.6999999999998,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1735.6999999999998,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 436.39999999999986,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 378.97,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-05-05"
+                },
+                {
+                    "value": 1725.6999999999998,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1725.6999999999998,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 426.39999999999986,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 378.15,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-05-12"
+                },
+                {
+                    "value": 1751.6,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1751.6,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 452.2999999999999,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 384.57,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-05-19"
+                },
+                {
+                    "value": 1754.3000000000002,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 1754.3000000000002,
+                            "quantity": 10.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 10.0,
+                            "gains": 455.0,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 385.87,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-05-26"
+                },
+                {
+                    "value": 0.0,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 0.0,
+                            "quantity": 0.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 0.0,
+                            "gains": 0.0,
+                            "tax": 255.09999999999994,
+                            "seqNo": 1,
+                            "bookedGains": 510.1999999999998
+                        }
+                    ],
+                    "portfolioCash": 1192.5,
+                    "benchmarkPrice": 393.26,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-06-02"
+                },
+                {
+                    "value": 0.0,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 0.0,
+                            "quantity": 0.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 0.0,
+                            "gains": 0.0,
+                            "tax": 255.09999999999994,
+                            "seqNo": 1,
+                            "bookedGains": 510.1999999999998
+                        }
+                    ],
+                    "portfolioCash": 1192.5,
+                    "benchmarkPrice": 395.03,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-06-09"
+                },
+                {
+                    "value": 0.0,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 0.0,
+                            "quantity": 0.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 0.0,
+                            "gains": 0.0,
+                            "tax": 255.09999999999994,
+                            "seqNo": 1,
+                            "bookedGains": 510.1999999999998
+                        }
+                    ],
+                    "portfolioCash": 1192.5,
+                    "benchmarkPrice": 405.25,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-06-16"
+                },
+                {
+                    "value": 0.0,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 0.0,
+                            "quantity": 0.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 0.0,
+                            "gains": 0.0,
+                            "tax": 255.09999999999994,
+                            "seqNo": 1,
+                            "bookedGains": 510.1999999999998
+                        }
+                    ],
+                    "portfolioCash": 1192.5,
+                    "benchmarkPrice": 399.61,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-06-23"
+                },
+                {
+                    "value": 0.0,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 0.0,
+                            "quantity": 0.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 0.0,
+                            "gains": 0.0,
+                            "tax": 255.09999999999994,
+                            "seqNo": 1,
+                            "bookedGains": 510.1999999999998
+                        }
+                    ],
+                    "portfolioCash": 1192.5,
+                    "benchmarkPrice": 407.28,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-06-30"
+                },
+                {
+                    "value": 0.0,
+                    "holdingList": [
+                        {
+                            "ticker": "AAPL",
+                            "positionValue": 0.0,
+                            "quantity": 0.0
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "AAPL",
+                            "quantity": 0.0,
+                            "gains": 0.0,
+                            "tax": 255.09999999999994,
+                            "seqNo": 1,
+                            "bookedGains": 510.1999999999998
+                        }
+                    ],
+                    "portfolioCash": 1192.5,
+                    "benchmarkPrice": 402.89,
+                    "netNewPurchase": 1559.1600000000003,
+                    "date": "2023-07-07"
                 }
             ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2022-11-04"
+            "feesPaid": 621.76,
+            "gainTaxValue": 255.09999999999994,
+            "standardDeviation": 194.14609452782761
         },
-        {
-            "value": 2000.7999000000002,
-            "holdingList": [
+        "simulation": {
+            "responseList": [
                 {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
+                    "value": 649.6500000000001,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 649.6500000000001,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 0.0,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 351.34,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2022-12-30"
+                },
+                {
+                    "value": 659.357583821939,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 659.357583821939,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 9.707583821938865,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 356.59,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-01-06"
+                },
+                {
+                    "value": 677.1825567826039,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 677.1825567826039,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 27.53255678260383,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 366.23,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-01-13"
+                },
+                {
+                    "value": 672.5229165480732,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 672.5229165480732,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 22.872916548073103,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 363.71,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-01-20"
+                },
+                {
+                    "value": 689.4603389878752,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 689.4603389878752,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 39.810338987875056,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 372.87,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-01-27"
+                },
+                {
+                    "value": 700.5177392269599,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 700.5177392269599,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 50.867739226959735,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 378.85,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-02-03"
+                },
+                {
+                    "value": 693.4358256959072,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 693.4358256959072,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 43.78582569590712,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 375.02,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-02-10"
+                },
+                {
+                    "value": 691.9565748278023,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 691.9565748278023,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 42.30657482780224,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 374.22,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-02-17"
+                },
+                {
+                    "value": 673.4844296123415,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 673.4844296123415,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 23.834429612341406,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 364.23,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-02-24"
+                },
+                {
+                    "value": 686.5203278875165,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 686.5203278875165,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 36.87032788751637,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 371.28,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-03-03"
+                },
+                {
+                    "value": 655.8258723743384,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 655.8258723743384,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 6.175872374338308,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 354.68,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-03-10"
+                },
+                {
+                    "value": 665.4410030170206,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 665.4410030170206,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 15.791003017020591,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 359.88,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-03-17"
+                },
+                {
+                    "value": 672.2455570103035,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 672.2455570103035,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 22.595557010303466,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 363.56,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-03-24"
+                },
+                {
+                    "value": 695.377342460295,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 695.377342460295,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 45.72734246029491,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 376.07,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-03-31"
+                },
+                {
+                    "value": 695.1554548300792,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 695.1554548300792,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 45.50545483007916,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 375.95,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-04-07"
+                },
+                {
+                    "value": 700.7766081288781,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 700.7766081288781,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 51.12660812887808,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 378.99,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-04-14"
+                },
+                {
+                    "value": 700.0369826948256,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 700.0369826948256,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 50.386982694825534,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 378.59,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-04-21"
+                },
+                {
+                    "value": 706.4347426993796,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 706.4347426993796,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 56.7847426993796,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 382.05,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-04-28"
+                },
+                {
+                    "value": 700.7396268571756,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 700.7396268571756,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 51.08962685717549,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 378.97,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-05-05"
+                },
+                {
+                    "value": 699.2233947173679,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 699.2233947173679,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 49.573394717367805,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 378.15,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-05-12"
+                },
+                {
+                    "value": 711.0943829339103,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 711.0943829339103,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 61.44438293391022,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 384.57,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-05-19"
+                },
+                {
+                    "value": 713.4981655945809,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 713.4981655945809,
+                            "quantity": 1.8490635851312123
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 63.84816559458081,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 649.6500000000001,
+                    "benchmarkPrice": 385.87,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-05-26"
+                },
+                {
+                    "value": 1376.8127454887006,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 1376.8127454887006,
+                            "quantity": 3.5010241201462153
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 77.51274548870045,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        },
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.651960535015003,
+                            "gains": 0.0,
+                            "tax": 0.0,
+                            "seqNo": 2,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 393.26,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-06-02"
+                },
+                {
+                    "value": 1383.0095581813594,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 1383.0095581813594,
+                            "quantity": 3.5010241201462153
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 80.78558803438266,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        },
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.651960535015003,
+                            "gains": 2.9239701469765254,
+                            "tax": 0.0,
+                            "seqNo": 2,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 395.03,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-06-09"
+                },
+                {
+                    "value": 1418.7900246892539,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 1418.7900246892539,
+                            "quantity": 3.5010241201462153
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 99.6830178744237,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        },
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.651960535015003,
+                            "gains": 19.8070068148299,
+                            "tax": 0.0,
+                            "seqNo": 2,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 405.25,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-06-16"
+                },
+                {
+                    "value": 1399.0442486516292,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 1399.0442486516292,
+                            "quantity": 3.5010241201462153
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 89.2542992542837,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        },
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.651960535015003,
+                            "gains": 10.489949397345306,
+                            "tax": 0.0,
+                            "seqNo": 2,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 399.61,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-06-23"
+                },
+                {
+                    "value": 1425.8971036531505,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 1425.8971036531505,
+                            "quantity": 3.5010241201462153
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 103.43661695224002,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        },
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.651960535015003,
+                            "gains": 23.16048670091031,
+                            "tax": 0.0,
+                            "seqNo": 2,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 407.28,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-06-30"
+                },
+                {
+                    "value": 1410.5276077657086,
+                    "holdingList": [
+                        {
+                            "ticker": "VOO",
+                            "positionValue": 1410.5276077657086,
+                            "quantity": 3.5010241201462153
+                        }
+                    ],
+                    "gains": [
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.8490635851312123,
+                            "gains": 95.31922781351402,
+                            "tax": 0.0,
+                            "seqNo": 1,
+                            "bookedGains": 0.0
+                        },
+                        {
+                            "ticker": "VOO",
+                            "quantity": 1.651960535015003,
+                            "gains": 15.908379952194473,
+                            "tax": 0.0,
+                            "seqNo": 2,
+                            "bookedGains": 0.0
+                        }
+                    ],
+                    "portfolioCash": 0.0,
+                    "benchmarkPrice": 402.89,
+                    "netNewPurchase": 649.6500000000001,
+                    "date": "2023-07-07"
                 }
             ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2022-11-11"
-        },
-        {
-            "value": 1974.9851999999996,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2022-11-18"
-        },
-        {
-            "value": 1977.8355999999999,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2022-11-25"
-        },
-        {
-            "value": 1973.5187999999998,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2022-12-02"
-        },
-        {
-            "value": 1977.1356,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2022-12-09"
-        },
-        {
-            "value": 1979.5496,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2022-12-16"
-        },
-        {
-            "value": 1928.3635500000003,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2022-12-23"
-        },
-        {
-            "value": 1965.7784,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2022-12-30"
-        },
-        {
-            "value": 1937.1352499999996,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-01-06"
-        },
-        {
-            "value": 1969.0455,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-01-13"
-        },
-        {
-            "value": 2049.4272,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-01-20"
-        },
-        {
-            "value": 1981.0321,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-01-27"
-        },
-        {
-            "value": 2012.0031000000001,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-02-03"
-        },
-        {
-            "value": 2005.9609500000001,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-02-10"
-        },
-        {
-            "value": 2000.8103999999998,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-02-17"
-        },
-        {
-            "value": 1917.2591500000003,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-02-24"
-        },
-        {
-            "value": 1977.4331999999997,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-03-03"
-        },
-        {
-            "value": 1938.1530000000002,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-03-10"
-        },
-        {
-            "value": 1904.3580499999998,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-03-17"
-        },
-        {
-            "value": 1895.9644999999998,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-03-24"
-        },
-        {
-            "value": 1959.06575,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-03-31"
-        },
-        {
-            "value": 2034.5523,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-04-07"
-        },
-        {
-            "value": 2069.2126,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-04-14"
-        },
-        {
-            "value": 2040.3621999999998,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-04-21"
-        },
-        {
-            "value": 2064.48515,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-04-28"
-        },
-        {
-            "value": 1987.8030499999998,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-05-05"
-        },
-        {
-            "value": 2027.8016,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-05-12"
-        },
-        {
-            "value": 1986.7644000000003,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-05-19"
-        },
-        {
-            "value": 1956.3705,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-05-26"
-        },
-        {
-            "value": 1948.2599500000003,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-06-02"
-        },
-        {
-            "value": 1951.9866,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-06-09"
-        },
-        {
-            "value": 1954.562,
-            "holdingList": [
-                {
-                    "ticker": "HDFCBANK.BSE",
-                    "quantity": 100
-                }
-            ],
-            "portfolioCash": 0.0,
-            "netInvestment": 10201.0,
-            "date": "2023-06-16"
+            "feesPaid": 0.0,
+            "gainTaxValue": 0.0,
+            "standardDeviation": 32.42678049372441
         }
-    ]
+    }
 }

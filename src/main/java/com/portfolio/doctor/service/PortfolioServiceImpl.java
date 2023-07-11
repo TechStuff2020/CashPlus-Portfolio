@@ -37,17 +37,21 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public ResponseEntity<ApiResponse> processTrades(@RequestBody TradeDto tradeDto) {
-        checkCompanyCurrency(tradeDto.getSymbol());
-        Map<String, TreeMap<LocalDate, Map<String, String>>> tickerGroupTree = new HashMap<>();
-        Map<String, TreeMap<LocalDate, Map<String, String>>> currExchangeRateMap = new HashMap<>();
-        TreeMap<LocalDate, ArrayList<Trade>> tradesGroupedByTheirDate = groupTradesByTheirDate(tradeDto.getTradeList());
-        PortfolioRes actualValue = calculateResult(tradesGroupedByTheirDate, tradeDto, tickerGroupTree, currExchangeRateMap);
+        try {
+            checkCompanyCurrency(tradeDto.getBenchmarkSymbol());
 
-        modifyTradesForSimulation(tradeDto, tickerGroupTree, currExchangeRateMap, tradesGroupedByTheirDate, actualValue);
-        TreeMap<LocalDate, ArrayList<Trade>> simulationTradesGrouped = groupTradesByTheirDate(tradeDto.getTradeList());
-        PortfolioRes simulationValue = calculateResult(simulationTradesGrouped, tradeDto, tickerGroupTree, currExchangeRateMap);
-        return ResponseEntity.ok(new ApiResponse(true, Map.of("actual",actualValue,"simulation",simulationValue)));
+            Map<String, TreeMap<LocalDate, Map<String, String>>> tickerGroupTree = new HashMap<>();
+            Map<String, TreeMap<LocalDate, Map<String, String>>> currExchangeRateMap = new HashMap<>();
+            TreeMap<LocalDate, ArrayList<Trade>> tradesGroupedByTheirDate = groupTradesByTheirDate(tradeDto.getTradeList());
+            PortfolioRes actualValue = calculateResult(tradesGroupedByTheirDate, tradeDto, tickerGroupTree, currExchangeRateMap);
 
+            modifyTradesForSimulation(tradeDto, tickerGroupTree, currExchangeRateMap, tradesGroupedByTheirDate, actualValue);
+            TreeMap<LocalDate, ArrayList<Trade>> simulationTradesGrouped = groupTradesByTheirDate(tradeDto.getTradeList());
+            PortfolioRes simulationValue = calculateResult(simulationTradesGrouped, tradeDto, tickerGroupTree, currExchangeRateMap);
+            return ResponseEntity.ok(new ApiResponse(true, Map.of("actual", actualValue, "simulation", simulationValue)));
+        } catch (Exception e) {
+            throw new RuntimeException("Something went wrong please refer to documentation");
+        }
     }
 
     private void modifyTradesForSimulation(TradeDto tradeDto, Map<String, TreeMap<LocalDate, Map<String, String>>> tickerGroupTree, Map<String, TreeMap<LocalDate, Map<String, String>>> currExchangeRateMap, TreeMap<LocalDate, ArrayList<Trade>> tradesGroupedByTheirDate, PortfolioRes actualValue) {
@@ -56,19 +60,21 @@ public class PortfolioServiceImpl implements PortfolioService {
         LocalDate first = tradesGroupedByTheirDate.firstEntry().getKey();
         LocalDate last = tradesGroupedByTheirDate.lastEntry().getKey();
         long daysDifference = ChronoUnit.DAYS.between(first, last) / (tradeDto.getTradeList().size() - 1);
-        fetchCompanyReport(tradeDto.getSymbol());
-        List<Trade> simulationTrades=new ArrayList<>();
+        fetchCompanyReport(tradeDto.getBenchmarkSymbol());
+        List<Trade> simulationTrades = new ArrayList<>();
         for (Trade trade : tradeDto.getTradeList()) {
             Trade clone = trade.clone();
             clone.setAction((byte) 1);
-            clone.setTicker(tradeDto.getSymbol());
+            clone.setTicker(tradeDto.getBenchmarkSymbol());
             clone.setQuantity(installmentAmount / getClosePrice(
-                    tickerGroupTree, makeFriday(first), tradeDto, currExchangeRateMap, tradeDto.getSymbol()));
+                    tickerGroupTree, makeFriday(first), tradeDto, currExchangeRateMap, tradeDto.getBenchmarkSymbol()));
             clone.setDate(makeFriday(first));
+            clone.setFixedFee(0);
+            clone.setVariableFee(0);
             simulationTrades.add(clone);
-            first=first.plusDays(daysDifference);
+            first = first.plusDays(daysDifference);
         }
-        simulationTrades.get(simulationTrades.size()-1).setDate(last);
+        simulationTrades.get(simulationTrades.size() - 1).setDate(last);
         tradeDto.setTradeList(simulationTrades);
     }
 
@@ -108,7 +114,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
             PortfolioValueRes portfolioValueRes = createPortfolio(cashNetHolder, holdingMap, tradeDate);
 
-            portfolioValueRes.setBenchmarkPrice(getClosePrice(tickerGroupTree,tradeDate,tradeDto,currExchangeRateMap, tradeDto.getSymbol()));
+            portfolioValueRes.setBenchmarkPrice(getClosePrice(tickerGroupTree, tradeDate, tradeDto, currExchangeRateMap, tradeDto.getBenchmarkSymbol()));
 
             calculateValues(tickerGroupTree, tradeDate, portfolioValueRes, currExchangeRateMap, tradeDto);
 
