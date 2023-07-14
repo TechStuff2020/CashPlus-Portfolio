@@ -50,7 +50,8 @@ public class PortfolioServiceImpl implements PortfolioService {
             PortfolioRes simulationValue = calculateResult(simulationTradesGrouped, tradeDto, tickerGroupTree, currExchangeRateMap);
             return ResponseEntity.ok(new ApiResponse(true, Map.of("actual", actualValue, "simulation", simulationValue)));
         } catch (Exception e) {
-            throw new RuntimeException("Something went wrong please refer to documentation");
+
+            throw new RuntimeException("Something went wrong please refer to documentation", e);
         }
     }
 
@@ -59,7 +60,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         double installmentAmount = (firstDayRes.getPortfolioCash() + firstDayRes.getValue()) / (tradeDto.getTradeList().size());
         LocalDate first = tradesGroupedByTheirDate.firstEntry().getKey();
         LocalDate last = tradesGroupedByTheirDate.lastEntry().getKey();
-        long daysDifference = ChronoUnit.DAYS.between(first, last) / (tradeDto.getTradeList().size() - 1);
+        long daysDifference = tradeDto.getTradeList().size() == 1 ? 0 : ChronoUnit.DAYS.between(first, last) / (tradeDto.getTradeList().size() - 1);
         fetchCompanyReport(tradeDto.getBenchmarkSymbol());
         List<Trade> simulationTrades = new ArrayList<>();
         for (Trade trade : tradeDto.getTradeList()) {
