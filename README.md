@@ -1,5 +1,5 @@
 ### 30 second summary
-Going beyond off-the-shelf portfolio trackers and academic metrics such as IRR, XIRR, TWR and MWRs, this **Portfolio Doctor** helps you answer a simple question: Did my stock trading beat the index? To get the right answer, we use a concept of **Cash-aware portfolio** which is described below. The idle cash, even when earning small interest, has an opportunity cost. Brokerage fees, capital gains tax also cut into real returns. Only after all of that is factored in, we can correctly compare our stock picking and timing, against a plain BUY and HOLD index strategy. More conservative users can also use a benchmark of 60:40 index or any ETF. Based on region, benchmark curreency and index can be chosen, e.g. Dow Jones, Eurostoxx 50, S&P 500, DAX, SMI, Nifty-50 etc. 
+Going beyond off-the-shelf portfolio trackers and academic metrics such as IRR, XIRR, TWR and MWRs, this unique **Portfolio tracker** helps you answer a simple question: Did my stock trading beat the index? To get the right answer, we use a concept of **Cash-aware portfolio** which is described below. The idle cash, even when earning small interest, has an opportunity cost. Brokerage fees, capital gains tax also cut into real returns. Only after all of that is factored in, we can correctly compare our stock picking and timing, against a plain BUY and HOLD index strategy. More conservative users can also use a benchmark of 60:40 index or any ETF. Based on region, benchmark curreency and index can be chosen, e.g. Dow Jones, Eurostoxx 50, S&P 500, DAX, SMI, Nifty-50 etc. 
 
 ### Introduction and genesis of idea
 According to media, year 2022 saw a record number of first-time investors! A good portion of Gen-Z is beginning to earn, have investible savings. Besides this data - which may be real or cooked up ![Image](https://user-images.githubusercontent.com/20066864/243864065-292f45a0-8d9f-4091-963b-ec8aee2791c9.png) - one can feel that discussions in many social circles are beginning to involve "stock tips" or innocent brags about gains from Apple/Netflix/Tesla, etc etc. Over time, one wonders:
@@ -20,7 +20,7 @@ For above reasons (and many more), this project is launched in June 2023.
 
 > Please note that this is not a classic portfolio tracker. There are far too many portals and software applications doing the same already. [GetQuin](getquin.com), [Sharesight](https://www.sharesight.com), [Seeking Alpha](https://seekingalpha.com), to name a few, in addition to your broker's reports!
 
-The difference between an "off the shelf" portfolio tracker and **"Portfolio Doctor"** is described below. 
+The difference between an "off the shelf" portfolio tracker and this tool is described below. 
 
 ![Image](https://user-images.githubusercontent.com/20066864/243858729-5bbe9e64-e845-442c-8245-cb283704abda.png)
 
@@ -29,15 +29,15 @@ The difference between an "off the shelf" portfolio tracker and **"Portfolio Doc
 
 > Thus, a 'tweaked' calculation method offers a better, more real-life way to assess portfolio performance. It also makes benchmarking against index more realistic. As equities should be invested with a time horizon of at least 3-5 years, practically it is fair to assume that cash dips and rises from BUY/SELL trades are done from a separate Cash account earmarked for investing, rather than an expense account. The Cash is treated as a part of investment, as it counts towards the opportunity cost of holding an index fund. More on this - https://github.com/picaYmica/Portfolio-Doctor/wiki/Introduction-to-'Cash-aware'-portfolio 
 
-With benchmarking correctly done, the "Doctor" can now answer many questions and run several what-if scenarios that offer useful insights to the investor. Particularly, if users don't wish to use lumpsum investment to avoid **market timing**, there is also a feature to simulate staggered regular purchases. Users can then compare their actual performance with such What-if scenarios.
+With benchmarking correctly done, the tool can now answer many questions and run several what-if scenarios that offer useful insights to the investor. Particularly, if users don't wish to use lumpsum investment to avoid **market timing**, there is also a feature to simulate staggered regular purchases. Users can then compare their actual performance with such What-if scenarios.
 
 ![Image](https://user-images.githubusercontent.com/20066864/243866423-378681d8-fa5b-4a51-8afd-931c68faca28.png)
 
 ![image](https://github.com/picaYmica/Portfolio-Doctor/assets/20066864/4a9c993f-2d32-4691-a3bb-404d3311db0c)
 
-### What else does the doctor do?
+### What else does the portfolio analyzer do?
 
-Besides performance vs a benchmark, the doctor can also assess the volatality of your portfolio against a reference index. It can also tell you how well the portfolio is diversified, by grouping your equities in sectors, regions and type of stocks you hold, e.g. momentum, growth, value, etc.
+Besides performance vs a benchmark, the tool can also assess the volatality of your portfolio against a reference index. It can also tell you how well the portfolio is diversified, by grouping your equities in sectors, regions and type of stocks you hold, e.g. momentum, growth, value, etc.
 
 ![image](https://github.com/picaYmica/Portfolio-Doctor/assets/20066864/443b1330-0e9d-4f12-9d07-37de30a25eaf)
 
