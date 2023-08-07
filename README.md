@@ -39,8 +39,7 @@ With benchmarking correctly done, the tool can now answer many questions and run
 
 Besides performance vs a benchmark, the tool can also assess the volatality of your portfolio against a reference index. It can also tell you how well the portfolio is diversified, by grouping your equities in sectors, regions and type of stocks you hold, e.g. momentum, growth, value, etc.
 
-![image](https://github.com/picaYmica/Portfolio-Doctor/assets/20066864/443b1330-0e9d-4f12-9d07-37de30a25eaf)
-
+![image](https://github.com/TechStuff2020/CashPlus-Portfolio/assets/20066864/86be045f-a60b-407f-abe2-f72c150ea922)
 
 ### Great! Where is the technical ReadMe.txt or installation instructions?
 
