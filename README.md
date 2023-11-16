@@ -4,7 +4,7 @@ Going beyond off-the-shelf portfolio trackers and academic metrics such as IRR, 
 ### Introduction and genesis of idea
 According to media, year 2022 saw a record number of first-time investors! A large portion of Gen-Z population is beginning to earn, have investible savings. Besides this data - which may be real or cooked up ![Image](https://user-images.githubusercontent.com/20066864/243864065-292f45a0-8d9f-4091-963b-ec8aee2791c9.png) - one can feel that, discussions in many social circles are beginning to involve "stock tips" or innocent brags about gains from Apple/Netflix/Tesla, etc etc. Over time, one wonders:
 
-### Is DIY investing worth it? 
+### Is DIY investing worth it?
 
 Again, data shows that even professional fund managers do worse than the index - let alone new beginners. Yet, pride, over confidence or plain beginner's luck, makes many people invest on their own. In other words, a majority beginners - even with substantial investment amounts - opt for **self-service or advisory** mode, and prefer to make investment decisions themselves. Therefore, just like a routine doctor's check-up for bodily health, an investment portfolio too needs a periodic health check-up.
 
