@@ -43,7 +43,7 @@ Besides performance vs a benchmark, the tool can also assess the volatality of y
 
 ### Great! Where is the technical ReadMe.txt or installation instructions?
 
-Please refer /src directory. This ReadMe is meant to be a one-pager overview of the project. The project is a web-app without any need for a database. User's trade data is stored in user's browser, so that data privacy concerns do not arise. Only the stock ticker symbols are sent to [Alpha-Vantage](https://www.alphavantage.co/#about) to get the market prices. All calculations happen local device's memory.
+Please refer /src directory. This ReadMe is meant to be a one-pager overview of the project. The project is a REST API, with WordPress content management front-end without any need for any user data storage. User's trading data is ephemeral, so that data privacy concerns do not arise. Only the stock ticker symbols are sent to [Alpha-Vantage](https://www.alphavantage.co/#about) to get the market prices. All calculations happen local device's memory, where the API is installed.
 
 Setting up a portfolo is quite intuitive, as shown below: 
 
@@ -53,4 +53,7 @@ Supported benchmark indices and currencies:
 
 ![image](https://github.com/TechStuff2020/Portfolio-Doctor/assets/20066864/70482d6a-cb58-4d72-9ad2-4782b3c7d28f) ![image](https://github.com/TechStuff2020/Portfolio-Doctor/assets/20066864/6ee5e464-9ba8-4e9b-a437-2114a48e3fc3)
 
+### I like this! How can I support this initiative? 
+
+Firstly, thank you! If you'd like to support this initiative, consider [buying me a coffee](https://www.buymeacoffee.com/githubtech2020) .
 
