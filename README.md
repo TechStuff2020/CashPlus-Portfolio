@@ -55,5 +55,5 @@ Supported benchmark indices and currencies:
 
 ### I like this! How can I support this initiative? 
 
-Firstly, thank you! If you're a techie, feel free to pull and contribute to the repo. It is open source. If you wish to use/customize the software, send an email to hello-at-portfoliodoc.app If you've excess idle cash, consider [buying me a coffee](https://www.buymeacoffee.com/githubtech2020). 
+Firstly, thank you! If you're a techie, feel free to pull and contribute to the repo. It is open source. If you wish to use/customize the software, send an email to hello-(at)-portfoliodoc.app If you've excess idle cash, consider [buying me a coffee](https://www.buymeacoffee.com/githubtech2020). 
 
